@@ -383,23 +383,20 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
     
     [response setObject:@(image.size.width) forKey:@"width"];
     [response setObject:@(image.size.height) forKey:@"height"];
-    
+    // self.callback(@[response]);
+   // return;
     ALAssetsLibrary* assetsLibrary = [[ALAssetsLibrary alloc] init];
     [assetsLibrary assetForURL:imageURL resultBlock:^(ALAsset *asset) {
       
       
       ALAssetRepresentation *rep = [asset defaultRepresentation];
-      Byte *buffer = (Byte*)malloc(rep.size);
-      NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
-      NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
-      [data writeToFile:path atomically:YES];
       
       CLLocation *location = [asset valueForProperty:ALAssetPropertyLocation];
       if (location != nil) {
         [response setObject:[NSNumber numberWithDouble:location.coordinate.latitude] forKey:@"latitude"];
         [response setObject:[NSNumber numberWithDouble:location.coordinate.longitude] forKey:@"longitude"];
       }
-      
+    
       
       self.callback(@[response]);
     } failureBlock:^(NSError *error) {
